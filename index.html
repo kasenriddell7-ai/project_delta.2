@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Hub Proxy</title>
+    <!-- Proxy Script to bypass iframe blocks -->
+    <script src="https://unpkg.com/@ungap/custom-elements-builtin"></script>
+    <script type="module" src="https://unpkg.com/x-frame-bypass"></script>
+
+    <style>
+        :root {
+            --bg: #0f0f0f;
+            --nav: #1a1a1a;
+            --accent: #ff4757;
+            --text: #ffffff;
+        }
+        body, html { margin: 0; padding: 0; height: 100%; background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; overflow: hidden; }
+
+        /* Navigation & Tabs */
+        .header { background: var(--nav); display: flex; align-items: center; padding: 5px 10px; border-bottom: 2px solid #333; }
+        .tabs { display: flex; gap: 5px; flex-grow: 1; }
+        .tab { 
+            padding: 8px 20px; background: #333; border-radius: 5px 5px 0 0; 
+            cursor: pointer; font-size: 14px; transition: 0.2s; border: none; color: white;
+        }
+        .tab.active { background: var(--accent); font-weight: bold; }
+        
+        /* Browser Bar */
+        .browser-bar { background: #222; padding: 8px; display: flex; gap: 10px; }
+        input#url-input { 
+            flex-grow: 1; background: #111; border: 1px solid #444; 
+            color: white; padding: 5px 15px; border-radius: 20px; outline: none;
+        }
+
+        /* Content Area */
+        .content-container { height: calc(100vh - 95px); width: 100%; position: relative; }
+        .view { display: none; width: 100%; height: 100%; border: none; }
+        .view.active { display: block; }
+        
+        iframe { width: 100%; height: 100%; border: none; }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <div class="tabs">
+        <button class="tab active" onclick="switchTab(0)">Bleach Stream</button>
+        <button class="tab" onclick="switchTab(1)">Web Proxy</button>
+        <button class="tab" onclick="switchTab(2)">Games Hub</button>
+    </div>
+</div>
+
+<div class="browser-bar" id="browser-nav" style="display:none;">
+    <input type="text" id="url-input" placeholder="Enter URL (e.g., google.com) and press Enter...">
+</div>
+
+<div class="content-container">
+    <!-- TAB 1: Bleach -->
+    <div id="tab-0" class="view active">
+        <iframe is="x-frame-bypass" src="https://aniwaves.ru/watch/bleach-80678/ep-1"></iframe>
+    </div>
+
+    <!-- TAB 2: Browser/Proxy -->
+    <div id="tab-1" class="view">
+        <iframe id="proxy-frame" is="x-frame-bypass" src="https://www.google.com/search?igu=1"></iframe>
+    </div>
+
+    <!-- TAB 3: Games -->
+    <div id="tab-2" class="view">
+        <iframe src="https://poki.com"></iframe>
+    </div>
+</div>
+
+<script>
+    function switchTab(index) {
+        // Update Tabs
+        document.querySelectorAll('.tab').forEach((t, i) => {
+            t.classList.toggle('active', i === index);
+        });
+
+        // Update Views
+        document.querySelectorAll('.view').forEach((v, i) => {
+            v.classList.toggle('active', i === index);
+        });
+
+        // Show/Hide Browser bar only for Proxy Tab
+        document.getElementById('browser-nav').style.display = (index === 1) ? 'flex' : 'none';
+    }
+
+    // Proxy Browser logic
+    const urlInput = document.getElementById('url-input');
+    const proxyFrame = document.getElementById('proxy-frame');
+
+    urlInput.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            let url = urlInput.value;
+            if (!url.startsWith('http')) url = 'https://' + url;
+            proxyFrame.src = url;
+        }
+    });
+</script>
+
+</body>
+</html>
